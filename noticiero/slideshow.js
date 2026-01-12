@@ -1659,6 +1659,59 @@ window.addEventListener('DOMContentLoaded', ()=>{
   const fsBtn = qs('#fullscreen');
   if(fsBtn){ fsBtn.addEventListener('click', ()=>{ toggleFullscreen(); }); }
 
+  // Touch swipe support for mobile: swipe left/right in the viewer to navigate slides
+  (function enableTouchSwipe(){
+    const viewerEl = qs('.viewer');
+    if(!viewerEl) return;
+    let touchStartX = null;
+    let touchStartY = null;
+    let touchMoved = false;
+    const TOUCH_SWIPE_THRESHOLD = 50; // pixels
+
+    viewerEl.addEventListener('touchstart', (e)=>{
+      if(e.touches && e.touches.length === 1){
+        const t = e.touches[0];
+        touchStartX = t.clientX;
+        touchStartY = t.clientY;
+        touchMoved = false;
+      }
+    }, {passive:true});
+
+    viewerEl.addEventListener('touchmove', (e)=>{
+      if(touchStartX === null) return;
+      if(e.touches && e.touches.length === 1){
+        const t = e.touches[0];
+        const dx = t.clientX - touchStartX;
+        const dy = t.clientY - touchStartY;
+        if(Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 10){
+          // horizontal swipe detected — prevent vertical page scroll while swiping horizontally
+          e.preventDefault();
+          touchMoved = true;
+        }
+      }
+    }, {passive:false});
+
+    viewerEl.addEventListener('touchend', (e)=>{
+      if(touchStartX === null) return;
+      const t = (e.changedTouches && e.changedTouches[0]) || null;
+      if(!t){ touchStartX = null; touchStartY = null; touchMoved=false; return; }
+      const dx = t.clientX - touchStartX;
+      const dy = t.clientY - touchStartY;
+      if(Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > TOUCH_SWIPE_THRESHOLD){
+        if(dx < 0){ pause(); next(); } else { pause(); prev(); }
+      }
+      touchStartX = null;
+      touchStartY = null;
+      touchMoved = false;
+    }, {passive:true});
+
+    viewerEl.addEventListener('touchcancel', ()=>{
+      touchStartX = null;
+      touchStartY = null;
+      touchMoved = false;
+    }, {passive:true});
+  })();
+
   // slide number input: Enter to jump (1-indexed). Out-of-range numbers do nothing.
   const counterInput = qs('#counter-input');
   if(counterInput){
