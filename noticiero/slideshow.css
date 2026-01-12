@@ -1,0 +1,95 @@
+*{box-sizing:border-box}
+html,body{height:100%;margin:0;font-family:system-ui,Segoe UI,Roboto,Helvetica,Arial}
+.slideshow{display:flex;flex-direction:column;height:100vh;background:#111;color:#fff;align-items:center;justify-content:center}
+.viewer{position:relative;max-width:1200px;max-height:80vh;width:100%;overflow:hidden;border-radius:6px;background:#000;display:flex;align-items:center;justify-content:center}
+.viewer img{max-width:100%;max-height:80vh;display:block;width:auto;height:auto;object-fit:contain}
+.controls{margin-top:12px;display:flex;gap:8px;align-items:center}
+.button{background:#222;border:1px solid #444;color:#fff;padding:8px 12px;border-radius:6px;cursor:pointer}
+.button:active{transform:translateY(1px)}
+.button[disabled]{opacity:.45;cursor:not-allowed;border-color:#333;color:#999;pointer-events:none}
+.counter{opacity:.85;display:flex;align-items:center;gap:8px}
+.counter-input{width:56px;padding:6px 8px;border-radius:6px;border:1px solid #444;background:rgba(0,0,0,0.4);color:#fff;text-align:center}
+.counter-input:focus{outline:2px solid #0ea5a4;background:#06121a}
+/* Hide native number input spinners for browsers that may still show them */
+.counter-input::-webkit-outer-spin-button,
+.counter-input::-webkit-inner-spin-button{ -webkit-appearance:none; margin:0; }
+.counter-input{ -moz-appearance:textfield; }
+/* Allow larger numbers without overlap */
+.counter-input{ min-width:64px; padding-left:8px; padding-right:8px; }
+
+.progress{width:300px;height:6px;background:#222;border-radius:4px;overflow:hidden}
+.progress > i{display:block;height:100%;background:linear-gradient(90deg,#0ea5a4,#60a5fa);width:0%}
+.thumbnail-row{margin-top:12px;max-width:1200px;overflow:auto;padding:6px 0;display:flex;gap:6px}
+.thumbnail{width:110px;height:70px;object-fit:cover;border-radius:4px;opacity:.7;cursor:pointer}
+.thumbnail.active{outline:3px solid #0ea5a4;opacity:1}
+.footer{position:fixed;left:12px;bottom:12px;color:#ddd;font-size:12px;opacity:.9}
+@media (max-width:600px){.thumbnail{width:70px;height:46px}}
+
+/* Fullscreen styles: make slideshow fill viewport and keep controls at the bottom */
+.slideshow.fullscreen{
+  position:fixed;
+  inset:0;
+  width:100%;
+  height:100vh;
+  z-index:9999;
+  padding:0;
+  background:#000;
+  border-radius:0;
+  overflow:hidden;
+}
+
+/* Viewer fills entire viewport in fullscreen. Image scales to contain while preserving aspect ratio. */
+.slideshow.fullscreen .viewer{
+  position:absolute;
+  inset:0;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  width:100%;
+  height:100vh;
+  max-height: 100vh;
+  max-width: 100%;
+  background:#000;
+  border-radius:0;
+  overflow:hidden;
+}
+
+.slideshow.fullscreen .viewer img{
+  width:100% !important;
+  height:100% !important;
+  object-fit:contain;
+  max-width:none;
+  max-height:none;
+  display:block;
+  object-fit:contain !important;
+}
+
+/* Controls now hover over the viewer as a translucent overlay */
+.slideshow.fullscreen .controls{
+  position:fixed;
+  left:50%;
+  transform:translateX(-50%);
+  bottom:20px;
+  z-index:10002;
+  background:rgba(0,0,0,0.45);
+  backdrop-filter: blur(6px);
+  padding:8px 12px;
+  border-radius:10px;
+  display:flex;
+  align-items:center;
+  gap:8px;
+  transition: opacity 200ms ease, transform 200ms ease;
+}
+
+/* In fullscreen, hide the floating controls after a short inactivity period.
+   Moving the mouse or interacting will reveal them again. */
+.slideshow.fullscreen.controls-hidden .controls{
+  opacity:0;
+  transform:translate(-50%,12px);
+  pointer-events:none;
+}
+
+.slideshow.fullscreen .thumbnail-row{display:none}
+
+/* hide the page footer while fullscreen */
+.slideshow.fullscreen ~ .footer{display:none}

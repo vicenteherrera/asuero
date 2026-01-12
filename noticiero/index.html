@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Noticiero 2025 — Slideshow</title>
+  <link rel="stylesheet" href="slideshow.css">
+</head>
+<body>
+  <div class="slideshow">
+    <div class="viewer">
+      <img id="main-img" alt="slideshow image" src=""/>
+    </div>
+
+    <div class="controls">
+      <button id="prev" class="button">Prev</button>
+      <button id="next" class="button">Next</button>
+      <button id="fullscreen" class="button">Fullscreen</button>
+      <div class="counter">
+        <input id="counter-input" class="counter-input" type="text" inputmode="numeric" pattern="\d*" value="1" aria-label="Slide number" />
+        <span class="counter-total">/ 0</span>
+      </div>
+      <div class="progress"><i></i></div>
+    </div>
+
+    <div class="thumbnail-row"></div>
+  </div>
+
+  <script src="slideshow.js"></script>
+  <div class="footer">Open this file with a static file server or in the browser (may be heavy with many images).</div>
+</body>
+</html>
